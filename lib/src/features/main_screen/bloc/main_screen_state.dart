@@ -1,14 +1,20 @@
-import "../domain/main_screen_models.dart";
+part of 'main_screen_bloc.dart';
 
-class MainScreenEvent {
-  const MainScreenEvent();
+enum MainScreenStatus {
+  loading,
+  loadingSuccess
 }
 
-class InitMainScreen extends MainScreenEvent {
-  const InitMainScreen();
-}
+class MainScreenState extends Equatable {
+  const MainScreenState({required this.dishes});
 
-class AddNewDish {
-  final DishType? dishType;
-  const AddNewDish({this.dishType});
+  final List<Dish> dishes;
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => throw UnimplementedError();
+
+  MainScreenState copyWith(List<Dish> newDishes) {
+    return MainScreenState(dishes: newDishes ?? dishes);
+  }
 }
