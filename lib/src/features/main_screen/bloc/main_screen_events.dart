@@ -8,7 +8,7 @@ class InitMainScreen extends MainScreenEvent {
   const InitMainScreen();
 }
 
-class AddNewDish extends MainScreenEvent{
+class AddNewDishEvent extends MainScreenEvent{
   final DishType dishType;
-  const AddNewDish({required this.dishType});
+  const AddNewDishEvent({required this.dishType});
 }
