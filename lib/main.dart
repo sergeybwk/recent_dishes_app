@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recent_dishes_app/src/features/main_screen/bloc/main_screen_bloc.dart';
 import 'package:recent_dishes_app/src/features/main_screen/presentation/main_screen.dart';
+import 'package:recent_dishes_app/src/features/main_screen/repository/main_screen_repository.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,6 +20,6 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         home:
-            BlocProvider(create: (_) => MainScreenBloc()..add(InitMainScreen()), child: MainScreen()));
+            BlocProvider(create: (_) => MainScreenBloc(mainScreenRepository: MainScreenRepository())..add(InitMainScreen()), child: MainScreen()));
   }
 }
