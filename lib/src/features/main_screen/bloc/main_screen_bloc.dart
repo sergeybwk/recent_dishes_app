@@ -17,18 +17,19 @@ class MainScreenBloc extends Bloc<MainScreenEvent, MainScreenState> {
   MainScreenRepository mainScreenRepository;
 
   Future<void> _loadDishesFromDB(InitMainScreen event, Emitter<MainScreenState> emit) async {
+    print("load dishes bloc init");
     List<Dish> dishes = await mainScreenRepository.loadDishesFromDB();
     emit(state.copyWith(newDishes: dishes,newStatus: MainScreenStatus.loadingSuccess));
   }
 
   void _addNewDish(AddNewDishEvent event, Emitter<MainScreenState> emit) {
     DateTime _currentDateTime = DateTime.timestamp();
-    List<Dish> _newDishList = [
-      ...state.dishes,
-      Dish(date: _currentDateTime, dishType: event.dishType)
-    ];
+    Dish newDish = Dish(date: _currentDateTime, dishType: event.dishType);
+    List<Dish> newDishList = [...state.dishes, newDish];
+    print(newDishList.last.dishType);
+    mainScreenRepository.saveDishToDB(newDish);
     emit(state.copyWith(
-        newDishes: _newDishList, newStatus: MainScreenStatus.loadingSuccess));
+        newDishes: newDishList, newStatus: MainScreenStatus.loadingSuccess));
     print(state.dishes);
   }
 }

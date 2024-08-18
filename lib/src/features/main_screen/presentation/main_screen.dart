@@ -1,3 +1,4 @@
+import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recent_dishes_app/src/features/main_screen/presentation/add_new_dish.dart';
@@ -5,6 +6,7 @@ import 'package:recent_dishes_app/src/features/main_screen/presentation/dish_wid
 
 import '../bloc/main_screen_bloc.dart';
 
+@RoutePage()
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});
 

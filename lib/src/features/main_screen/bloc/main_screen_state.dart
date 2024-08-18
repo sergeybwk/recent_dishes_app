@@ -10,7 +10,7 @@ class MainScreenState extends Equatable {
 
   @override
   // TODO: implement props
-  List<Object?> get props => [];
+  List<Object?> get props => [dishes, status];
 
   MainScreenState copyWith(
       {List<Dish>? newDishes, MainScreenStatus? newStatus}) {
