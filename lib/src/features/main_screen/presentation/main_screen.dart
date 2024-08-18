@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,12 +26,19 @@ class MainScreen extends StatelessWidget {
                 height: 200,
               ),
               AddNewDish(),
-              ListView.builder(
-                shrinkWrap: true,
-                  itemCount: state.dishes.length,
-                  itemBuilder: (_, int index) {
-                return DishWidget(dish: state.dishes[index]);
-              })
+              ScrollConfiguration(
+                behavior: ScrollConfiguration.of(context).copyWith(dragDevices: {
+                  PointerDeviceKind.mouse,
+                  PointerDeviceKind.touch
+                }),
+                child: ListView.builder(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                    itemCount: state.dishes.length,
+                    itemBuilder: (_, int index) {
+                  return DishWidget(dish: state.dishes[index]);
+                }),
+              )
             ],
           );
         },

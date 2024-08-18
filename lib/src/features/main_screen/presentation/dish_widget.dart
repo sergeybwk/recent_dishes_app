@@ -9,7 +9,11 @@ class DishWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
+    String dishTypeText = switch (dish.dishType) {
+      DishType.full => "Complete dish",
+      null => "",
+      DishType.aLittle => "Little snack",
+    };
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
@@ -19,8 +23,7 @@ class DishWidget extends StatelessWidget {
       ),
       child: ListTile(
         title: Text(DateFormat("EEE, dd MMM HH:mm").format(dish.date.toLocal())),
-        subtitle:
-            dish.dishType != null ? Text(dish.dishType.toString()) : Text(""),
+        subtitle: Text(dishTypeText),
       ),
     );
   }

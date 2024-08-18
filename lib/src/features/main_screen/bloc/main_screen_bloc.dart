@@ -25,7 +25,7 @@ class MainScreenBloc extends Bloc<MainScreenEvent, MainScreenState> {
   void _addNewDish(AddNewDishEvent event, Emitter<MainScreenState> emit) {
     DateTime _currentDateTime = DateTime.timestamp();
     Dish newDish = Dish(date: _currentDateTime, dishType: event.dishType);
-    List<Dish> newDishList = [...state.dishes, newDish];
+    List<Dish> newDishList = [newDish, ...state.dishes];
     print(newDishList.last.dishType);
     mainScreenRepository.saveDishToDB(newDish);
     emit(state.copyWith(
