@@ -26,18 +26,21 @@ class MainScreen extends StatelessWidget {
                 height: 200,
               ),
               AddNewDish(),
-              ScrollConfiguration(
-                behavior: ScrollConfiguration.of(context).copyWith(dragDevices: {
-                  PointerDeviceKind.mouse,
-                  PointerDeviceKind.touch
-                }),
-                child: ListView.builder(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                    itemCount: state.dishes.length,
-                    itemBuilder: (_, int index) {
-                  return DishWidget(dish: state.dishes[index]);
-                }),
+              const SizedBox(height: 15),
+              Expanded(
+                child: ScrollConfiguration(
+                  behavior: ScrollConfiguration.of(context).copyWith(dragDevices: {
+                    PointerDeviceKind.mouse,
+                    PointerDeviceKind.touch
+                  }),
+                  child: ListView.builder(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                      itemCount: state.dishes.length,
+                      itemBuilder: (_, int index) {
+                    return DishWidget(dish: state.dishes[index]);
+                  }),
+                ),
               )
             ],
           );
