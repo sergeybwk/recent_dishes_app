@@ -3,7 +3,10 @@ import 'package:recent_dishes_app/src/features/main_screen/domain/main_screen_mo
 
 abstract class MainScreenRepository {
   Future<void> saveDishToDB(Dish dish);
+
   Future<List<Dish>> loadDishesFromDB();
+
+  Future<void> deleteDishFromDB(Dish dish);
 }
 
 class MainScreenRepositoryFirebase implements MainScreenRepository {
@@ -18,31 +21,36 @@ class MainScreenRepositoryFirebase implements MainScreenRepository {
         'datetime': Timestamp.fromDate(dish.date),
         "dishtype": numericDishType
       });
-    }
-    catch (e) {
+    } catch (e) {
       print(e);
     }
   }
 
   @override
   Future<List<Dish>> loadDishesFromDB() async {
-    print("load dishes from db");
     List<Dish> dishes = [];
     try {
-      QuerySnapshot<Map<String, dynamic>> data = await db.collection("dishes").get();
+      QuerySnapshot<Map<String, dynamic>> data =
+          await db.collection("dishes").get();
       for (var docSnapshot in data.docs) {
         Map<String, dynamic> data = docSnapshot.data();
         Timestamp dateTime = data["datetime"];
-        DishType type = data["dishtype"] == 0 ? DishType.full : DishType.aLittle;
-        dishes.add(Dish(date: DateTime.fromMillisecondsSinceEpoch(dateTime.millisecondsSinceEpoch), dishType: type));
+        DishType type =
+            data["dishtype"] == 0 ? DishType.full : DishType.aLittle;
+        dishes.add(Dish(
+            date: DateTime.fromMillisecondsSinceEpoch(
+                dateTime.millisecondsSinceEpoch),
+            dishType: type));
       }
-    }
-    catch (e) {
+    } catch (e) {
       print(e);
     }
-    for (var i in dishes) {
-      print("${i.date} ${i.dishType}");
-    }
     return dishes;
+  }
+
+  @override
+  Future<void> deleteDishFromDB(Dish dish) async {
+    DateTime timestamp = dish.date.toUtc();
+    db.collection("dishes").doc(timestamp.toString()).delete();
   }
 }

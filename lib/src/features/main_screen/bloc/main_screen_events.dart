@@ -12,3 +12,8 @@ class AddNewDishEvent extends MainScreenEvent{
   final DishType dishType;
   const AddNewDishEvent({required this.dishType});
 }
+
+class DeleteDishEvent extends MainScreenEvent {
+  final Dish dish;
+  const DeleteDishEvent({required this.dish});
+}

@@ -12,14 +12,17 @@ class MainScreenBloc extends Bloc<MainScreenEvent, MainScreenState> {
       : super(MainScreenState(dishes: [], status: MainScreenStatus.loading)) {
     on<AddNewDishEvent>(_addNewDish);
     on<InitMainScreen>(_loadDishesFromDB);
+    on<DeleteDishEvent>(_deleteDish);
   }
 
   MainScreenRepository mainScreenRepository;
 
-  Future<void> _loadDishesFromDB(InitMainScreen event, Emitter<MainScreenState> emit) async {
+  Future<void> _loadDishesFromDB(InitMainScreen event,
+      Emitter<MainScreenState> emit) async {
     print("load dishes bloc init");
     List<Dish> dishes = await mainScreenRepository.loadDishesFromDB();
-    emit(state.copyWith(newDishes: dishes,newStatus: MainScreenStatus.loadingSuccess));
+    emit(state.copyWith(
+        newDishes: dishes, newStatus: MainScreenStatus.loadingSuccess));
   }
 
   void _addNewDish(AddNewDishEvent event, Emitter<MainScreenState> emit) {
@@ -31,5 +34,14 @@ class MainScreenBloc extends Bloc<MainScreenEvent, MainScreenState> {
     emit(state.copyWith(
         newDishes: newDishList, newStatus: MainScreenStatus.loadingSuccess));
     print(state.dishes);
+  }
+
+  void _deleteDish(DeleteDishEvent event, Emitter<MainScreenState> emit) {
+    mainScreenRepository.deleteDishFromDB(event.dish);
+    print(state.dishes.length);
+    List<Dish> newDishList = List.from(state.dishes)
+      ..removeWhere((element) => element.date == event.dish.date);
+    print(state.dishes.length);
+    emit(state.copyWith(newDishes: newDishList));
   }
 }
