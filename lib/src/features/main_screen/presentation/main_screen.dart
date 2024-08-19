@@ -1,15 +1,17 @@
 import 'dart:ui';
 
 import 'package:auto_route/annotations.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recent_dishes_app/src/features/main_screen/presentation/add_new_dish.dart';
 import 'package:recent_dishes_app/src/features/main_screen/presentation/dish_widget.dart';
+import 'package:recent_dishes_app/src/features/main_screen/repository/main_screen_repository.dart';
 
 import '../bloc/main_screen_bloc.dart';
 
 @RoutePage()
-class MainScreen extends StatelessWidget {
+class MainScreen extends StatelessWidget implements AutoRouteWrapper {
   const MainScreen({super.key});
 
   @override
@@ -25,27 +27,37 @@ class MainScreen extends StatelessWidget {
               const SizedBox(
                 height: 200,
               ),
-              AddNewDish(),
+              const AddNewDish(),
               const SizedBox(height: 15),
               Expanded(
                 child: ScrollConfiguration(
-                  behavior: ScrollConfiguration.of(context).copyWith(dragDevices: {
-                    PointerDeviceKind.mouse,
-                    PointerDeviceKind.touch
-                  }),
+                  behavior: ScrollConfiguration.of(context).copyWith(
+                      dragDevices: {
+                        PointerDeviceKind.mouse,
+                        PointerDeviceKind.touch
+                      }),
                   child: ListView.builder(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    shrinkWrap: true,
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      shrinkWrap: true,
                       itemCount: state.dishes.length,
                       itemBuilder: (_, int index) {
-                    return DishWidget(dish: state.dishes[index]);
-                  }),
+                        return DishWidget(dish: state.dishes[index]);
+                      }),
                 ),
               )
             ],
           );
         },
       ),
+    );
+  }
+
+  @override
+  Widget wrappedRoute(BuildContext context) {
+    return BlocProvider<MainScreenBloc>(
+      child: this,
+      create: (_) =>
+          MainScreenBloc(mainScreenRepository: MainScreenRepositoryFirebase())..add(InitMainScreen()),
     );
   }
 }
