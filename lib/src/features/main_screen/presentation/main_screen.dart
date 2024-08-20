@@ -36,6 +36,7 @@ class MainScreen extends StatelessWidget implements AutoRouteWrapper {
                         PointerDeviceKind.mouse,
                         PointerDeviceKind.touch
                       }),
+                  // TODO Add group by day
                   child: ListView.builder(
                       physics: const AlwaysScrollableScrollPhysics(),
                       shrinkWrap: true,
