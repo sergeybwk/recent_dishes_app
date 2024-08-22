@@ -12,17 +12,29 @@ class _AddWaterWidgetState extends State<AddWaterWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return ToggleButtons(
-        borderRadius: BorderRadius.all(Radius.circular(4)),
-        isSelected: _selectedWaterVolume,
-        onPressed: (int index) {
-          setState(() {
-            for (int i = 0; i < _selectedWaterVolume.length; i++) {
-              _selectedWaterVolume[i] = index == i;
-            }
-          });
-    },
-        children: const [Text("100 мл"), Text("200 мл"), Text("250 мл")],
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text("Объем"),
+            const SizedBox(width: 10,),
+            ToggleButtons(
+              borderRadius: const BorderRadius.all(Radius.circular(4)),
+              isSelected: _selectedWaterVolume,
+              onPressed: (int index) {
+                setState(() {
+                  for (int i = 0; i < _selectedWaterVolume.length; i++) {
+                    _selectedWaterVolume[i] = index == i;
+                  }
+                });
+              },
+              children: const [Text("100"), Text("200"), Text("250")],
+            ),
+          ],
+        ),
+        ElevatedButton(onPressed: () {}, child: const Text("Добавить"))
+      ],
     );
   }
 }

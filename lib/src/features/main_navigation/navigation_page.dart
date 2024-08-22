@@ -9,12 +9,12 @@ class NavigationPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AutoTabsScaffold(
-      routes: [
+      routes: const [
         MainRoute(),
         WaterRoute()
       ],
       bottomNavigationBuilder: (_, tabsRouter) {
-        return BottomNavigationBar(items: [
+        return BottomNavigationBar(items: const [
           BottomNavigationBarItem(icon: Icon(Icons.food_bank_rounded), label: "Еда"),
           BottomNavigationBarItem(icon: Icon(Icons.water_drop_rounded), label: "Вода")
         ],
