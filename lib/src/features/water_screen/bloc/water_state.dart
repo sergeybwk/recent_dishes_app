@@ -1,6 +1,6 @@
 part of 'water_bloc.dart';
 
-enum WaterStatus { loading, loadingSuccess }
+enum WaterStatus { loading, loadingSuccess, loadingFailed }
 
 class WaterState {
   const WaterState({required this.waterIntakes, required this.status});

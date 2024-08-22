@@ -14,7 +14,7 @@ class MainScreenRepositoryFirebase implements MainScreenRepository {
 
   @override
   Future<void> saveDishToDB(Dish dish) async {
-    var timestamp = DateTime.timestamp().toString();
+    String timestamp = DateTime.timestamp().toString();
     int numericDishType = dish.dishType == DishType.full ? 0 : 1;
     try {
       db.collection('dishes').doc(timestamp).set({
