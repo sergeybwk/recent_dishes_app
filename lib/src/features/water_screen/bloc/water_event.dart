@@ -9,9 +9,11 @@ class InitWaterScreen extends WaterEvent {
 }
 
 class AddWaterEvent extends WaterEvent {
-  const AddWaterEvent();
+  final int volume;
+  const AddWaterEvent({required this.volume});
 }
 
 class DeleteWaterEvent extends WaterEvent {
-  const DeleteWaterEvent();
+  final DateTime date;
+  const DeleteWaterEvent({required this.date});
 }

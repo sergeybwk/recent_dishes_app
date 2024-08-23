@@ -5,10 +5,11 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recent_dishes_app/src/features/main_screen/presentation/add_new_dish.dart';
-import 'package:recent_dishes_app/src/features/main_screen/presentation/dish_widget.dart';
+import 'package:recent_dishes_app/src/common/widgets/card_widget.dart';
 import 'package:recent_dishes_app/src/features/main_screen/repository/main_screen_repository.dart';
 
 import '../bloc/main_screen_bloc.dart';
+import '../domain/main_screen_models.dart';
 
 @RoutePage()
 class MainScreen extends StatelessWidget implements AutoRouteWrapper {
@@ -42,7 +43,20 @@ class MainScreen extends StatelessWidget implements AutoRouteWrapper {
                       shrinkWrap: true,
                       itemCount: state.dishes.length,
                       itemBuilder: (_, int index) {
-                        return DishWidget(dish: state.dishes[index]);
+                        final subtitleText =
+                            switch (state.dishes[index].dishType) {
+                          DishType.full => "Complete dish",
+                          null => "",
+                          DishType.aLittle => "Little snack",
+                        };
+                        return CardWidget(
+                          onDelete: () {
+                            context.read<MainScreenBloc>().add(
+                                DeleteDishEvent(dish: state.dishes[index]));
+                          },
+                          date: state.dishes[index].date,
+                          subtitleText: subtitleText,
+                        );
                       }),
                 ),
               )
@@ -58,7 +72,8 @@ class MainScreen extends StatelessWidget implements AutoRouteWrapper {
     return BlocProvider<MainScreenBloc>(
       child: this,
       create: (_) =>
-          MainScreenBloc(mainScreenRepository: MainScreenRepositoryFirebase())..add(InitMainScreen()),
+          MainScreenBloc(mainScreenRepository: MainScreenRepositoryFirebase())
+            ..add(InitMainScreen()),
     );
   }
 }
