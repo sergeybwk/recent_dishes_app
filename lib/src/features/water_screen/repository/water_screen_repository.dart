@@ -14,11 +14,11 @@ class WaterScreenRepositoryFirebase implements WaterScreenRepository {
 
   @override
   Future<void> addWaterIntakeToDB(int volume, DateTime date) async {
-    String timestamp = DateTime.timestamp().toString();
+    Timestamp timestamp = Timestamp.fromDate(date);
     try {
       db
           .collection("water")
-          .doc(timestamp)
+          .doc(timestamp.toString())
           .set({'date': timestamp, 'volume': volume});
     } catch (e) {
       print(e);

@@ -19,6 +19,7 @@ class WaterBloc extends Bloc<WaterEvent, WaterState> {
 
   Future<void> _loadWaterIntakes(InitWaterScreen event,
       Emitter<WaterState> emit) async {
+    emit(state.copyWith(newStatus: WaterStatus.loading));
     List<WaterIntake>? waterIntakes =
     await waterScreenRepository.loadWaterIntakesFromDB();
     if (waterIntakes != null) {

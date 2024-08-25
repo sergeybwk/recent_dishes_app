@@ -22,19 +22,24 @@ class WaterScreen extends StatelessWidget implements AutoRouteWrapper {
         children: [
           AddWaterWidget(),
           Expanded(
-            child: BlocBuilder<WaterBloc, WaterState>(builder: (context, state) {
+            child:
+                BlocBuilder<WaterBloc, WaterState>(builder: (context, state) {
+                  if (state.status == WaterStatus.loading) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
               return ListView.builder(
-                shrinkWrap: true,
-                itemCount: state.waterIntakes.length,
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: state.waterIntakes.length,
                   itemBuilder: (context, index) {
-                return CardWidget(
-                    date: state.waterIntakes[index].date,
-                    subtitleText: "Water",
-                    onDelete: () {
-                      context.read<WaterBloc>().add(
-                          DeleteWaterEvent(date: state.waterIntakes[index].date));
-                    });
-              });
+                    return CardWidget(
+                        date: state.waterIntakes[index].date,
+                        subtitleText: "${state.waterIntakes[index].volume} ml",
+                        onDelete: () {
+                          context.read<WaterBloc>().add(DeleteWaterEvent(
+                              date: state.waterIntakes[index].date));
+                        });
+                  });
             }),
           )
         ],
@@ -47,7 +52,8 @@ class WaterScreen extends StatelessWidget implements AutoRouteWrapper {
     return BlocProvider<WaterBloc>(
       child: this,
       create: (_) =>
-          WaterBloc(waterScreenRepository: WaterScreenRepositoryFirebase()),
+          WaterBloc(waterScreenRepository: WaterScreenRepositoryFirebase())
+            ..add(const InitWaterScreen()),
     );
   }
 

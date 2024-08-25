@@ -14,11 +14,11 @@ class MainScreenRepositoryFirebase implements MainScreenRepository {
 
   @override
   Future<void> saveDishToDB(Dish dish) async {
-    String timestamp = DateTime.timestamp().toString();
+    Timestamp timestamp = Timestamp.fromDate(dish.date);
     int numericDishType = dish.dishType == DishType.full ? 0 : 1;
     try {
-      db.collection('dishes').doc(timestamp).set({
-        'datetime': Timestamp.fromDate(dish.date),
+      db.collection('dishes').doc(timestamp.toString()).set({
+        'datetime': timestamp,
         "dishtype": numericDishType
       });
     } catch (e) {
