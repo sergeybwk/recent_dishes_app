@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:recent_dishes_app/src/features/main_screen/bloc/main_screen_bloc.dart';
-import '../domain/main_screen_models.dart';
+import 'package:recent_dishes_app/src/features/main_screen/presentation/bloc/main_screen_bloc.dart';
+import '../../domain/main_screen_models.dart';
 
 class AddNewDish extends StatefulWidget {
   const AddNewDish({super.key});
@@ -29,7 +29,9 @@ class _AddNewDishState extends State<AddNewDish> {
             });
           },
         ),
-        const SizedBox(height: 15,),
+        const SizedBox(
+          height: 15,
+        ),
         ElevatedButton(
             onPressed: () {
               context.read<MainScreenBloc>().add(AddNewDishEvent(

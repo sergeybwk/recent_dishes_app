@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:recent_dishes_app/src/features/main_screen/domain/main_screen_models.dart';
 
-abstract class MainScreenRepository {
+abstract class DishesApi {
   Future<void> saveDishToDB(Dish dish);
 
   Future<List<Dish>> loadDishesFromDB();
@@ -9,7 +9,7 @@ abstract class MainScreenRepository {
   Future<void> deleteDishFromDB(Dish dish);
 }
 
-class MainScreenRepositoryFirebase implements MainScreenRepository {
+class DishesApiFirebase implements DishesApi {
   FirebaseFirestore db = FirebaseFirestore.instance;
 
   @override
@@ -41,16 +41,17 @@ class MainScreenRepositoryFirebase implements MainScreenRepository {
             date: DateTime.fromMillisecondsSinceEpoch(
                 dateTime.millisecondsSinceEpoch),
             dishType: type));
+
       }
     } catch (e) {
       print(e);
     }
-    return dishes;
+    return dishes.reversed.toList();
   }
 
   @override
   Future<void> deleteDishFromDB(Dish dish) async {
-    DateTime timestamp = dish.date.toUtc();
+    Timestamp timestamp = Timestamp.fromDate(dish.date);
     db.collection("dishes").doc(timestamp.toString()).delete();
   }
 }

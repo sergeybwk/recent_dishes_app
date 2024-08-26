@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:recent_dishes_app/src/features/water_screen/domain/water_models.dart';
-import 'package:recent_dishes_app/src/features/water_screen/repository/water_screen_repository.dart';
+import 'package:recent_dishes_app/src/features/water_screen/data/water_api.dart';
 
 part 'water_event.dart';
 
@@ -15,7 +15,7 @@ class WaterBloc extends Bloc<WaterEvent, WaterState> {
     on<InitWaterScreen>(_loadWaterIntakes);
   }
 
-  final WaterScreenRepository waterScreenRepository;
+  final WaterApi waterScreenRepository;
 
   Future<void> _loadWaterIntakes(InitWaterScreen event,
       Emitter<WaterState> emit) async {

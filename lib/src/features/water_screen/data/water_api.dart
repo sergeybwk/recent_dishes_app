@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:recent_dishes_app/src/features/water_screen/domain/water_models.dart';
 
-abstract class WaterScreenRepository {
+abstract class WaterApi {
   Future<void> addWaterIntakeToDB(int volume, DateTime date);
 
   Future<void> deleteWaterIntakeFromDB(DateTime date);
@@ -9,7 +9,7 @@ abstract class WaterScreenRepository {
   Future<List<WaterIntake>?> loadWaterIntakesFromDB();
 }
 
-class WaterScreenRepositoryFirebase implements WaterScreenRepository {
+class WaterApiFirebase implements WaterApi {
   FirebaseFirestore db = FirebaseFirestore.instance;
 
   @override
@@ -27,7 +27,7 @@ class WaterScreenRepositoryFirebase implements WaterScreenRepository {
 
   @override
   Future<void> deleteWaterIntakeFromDB(DateTime date) async {
-    DateTime timestamp = date.toUtc();
+    Timestamp timestamp = Timestamp.fromDate(date);
     try {
       db.collection('water').doc(timestamp.toString()).delete();
     } catch (e) {
@@ -53,6 +53,6 @@ class WaterScreenRepositoryFirebase implements WaterScreenRepository {
       print(e);
       return null;
     }
-    return waterIntakes;
+    return waterIntakes.reversed.toList();
   }
 }

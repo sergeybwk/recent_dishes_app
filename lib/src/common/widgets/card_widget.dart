@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:recent_dishes_app/src/features/main_screen/bloc/main_screen_bloc.dart';
-import '../../features/main_screen/domain/main_screen_models.dart';
 
 class CardWidget extends StatelessWidget {
   const CardWidget(

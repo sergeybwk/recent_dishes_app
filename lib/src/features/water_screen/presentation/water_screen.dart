@@ -1,13 +1,14 @@
-import 'package:auto_route/annotations.dart';
+import 'dart:ui';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recent_dishes_app/src/common/widgets/card_widget.dart';
-import 'package:recent_dishes_app/src/common/widgets/error_widget.dart';
+import 'package:recent_dishes_app/src/common/widgets/custom_error_widget.dart';
 import 'package:recent_dishes_app/src/features/water_screen/presentation/add_water_widget.dart';
-import 'package:recent_dishes_app/src/features/water_screen/repository/water_screen_repository.dart';
+import 'package:recent_dishes_app/src/features/water_screen/data/water_api.dart';
 
-import '../bloc/water_bloc.dart';
+import '../presentation/bloc/water_bloc.dart';
 
 @RoutePage()
 class WaterScreen extends StatelessWidget implements AutoRouteWrapper {
@@ -22,25 +23,32 @@ class WaterScreen extends StatelessWidget implements AutoRouteWrapper {
         children: [
           AddWaterWidget(),
           Expanded(
-            child:
-                BlocBuilder<WaterBloc, WaterState>(builder: (context, state) {
-                  if (state.status == WaterStatus.loading) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-              return ListView.builder(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: state.waterIntakes.length,
-                  itemBuilder: (context, index) {
-                    return CardWidget(
-                        date: state.waterIntakes[index].date,
-                        subtitleText: "${state.waterIntakes[index].volume} ml",
-                        onDelete: () {
-                          context.read<WaterBloc>().add(DeleteWaterEvent(
-                              date: state.waterIntakes[index].date));
-                        });
-                  });
-            }),
+            child: ScrollConfiguration(
+              behavior: ScrollConfiguration.of(context).copyWith(dragDevices: {
+                PointerDeviceKind.mouse,
+                PointerDeviceKind.touch
+              }),
+              child:
+                  BlocBuilder<WaterBloc, WaterState>(builder: (context, state) {
+                if (state.status == WaterStatus.loading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                return ListView.builder(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: state.waterIntakes.length,
+                    itemBuilder: (context, index) {
+                      return CardWidget(
+                          date: state.waterIntakes[index].date,
+                          subtitleText:
+                              "${state.waterIntakes[index].volume} ml",
+                          onDelete: () {
+                            context.read<WaterBloc>().add(DeleteWaterEvent(
+                                date: state.waterIntakes[index].date));
+                          });
+                    });
+              }),
+            ),
           )
         ],
       ),
@@ -52,7 +60,7 @@ class WaterScreen extends StatelessWidget implements AutoRouteWrapper {
     return BlocProvider<WaterBloc>(
       child: this,
       create: (_) =>
-          WaterBloc(waterScreenRepository: WaterScreenRepositoryFirebase())
+          WaterBloc(waterScreenRepository: WaterApiFirebase())
             ..add(const InitWaterScreen()),
     );
   }

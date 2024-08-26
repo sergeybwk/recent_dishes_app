@@ -4,11 +4,12 @@ import 'package:auto_route/annotations.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:recent_dishes_app/src/features/main_screen/presentation/add_new_dish.dart';
+import 'package:recent_dishes_app/src/features/main_screen/presentation/widgets/add_new_dish.dart';
 import 'package:recent_dishes_app/src/common/widgets/card_widget.dart';
-import 'package:recent_dishes_app/src/features/main_screen/repository/main_screen_repository.dart';
+import 'package:recent_dishes_app/src/features/main_screen/data/dishes_api.dart';
+import 'package:recent_dishes_app/src/features/main_screen/presentation/widgets/timer_widget.dart';
 
-import '../bloc/main_screen_bloc.dart';
+import '../presentation/bloc/main_screen_bloc.dart';
 import '../domain/main_screen_models.dart';
 
 @RoutePage()
@@ -25,9 +26,7 @@ class MainScreen extends StatelessWidget implements AutoRouteWrapper {
           }
           return Column(
             children: [
-              const SizedBox(
-                height: 200,
-              ),
+              TimerWidget(dateTime: DateTime.now()),
               const AddNewDish(),
               const SizedBox(height: 15),
               Expanded(
@@ -72,7 +71,7 @@ class MainScreen extends StatelessWidget implements AutoRouteWrapper {
     return BlocProvider<MainScreenBloc>(
       child: this,
       create: (_) =>
-          MainScreenBloc(mainScreenRepository: MainScreenRepositoryFirebase())
+          MainScreenBloc(mainScreenRepository: DishesApiFirebase())
             ..add(InitMainScreen()),
     );
   }

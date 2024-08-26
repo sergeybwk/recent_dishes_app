@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:recent_dishes_app/src/features/main_screen/repository/main_screen_repository.dart';
-import '../domain/main_screen_models.dart';
+import 'package:recent_dishes_app/src/features/main_screen/data/dishes_api.dart';
+import '../../domain/main_screen_models.dart';
 
 part 'main_screen_events.dart';
 
@@ -15,7 +15,8 @@ class MainScreenBloc extends Bloc<MainScreenEvent, MainScreenState> {
     on<DeleteDishEvent>(_deleteDish);
   }
 
-  MainScreenRepository mainScreenRepository;
+
+  DishesApi mainScreenRepository;
 
   Future<void> _loadDishesFromDB(InitMainScreen event,
       Emitter<MainScreenState> emit) async {
@@ -39,7 +40,7 @@ class MainScreenBloc extends Bloc<MainScreenEvent, MainScreenState> {
   void _deleteDish(DeleteDishEvent event, Emitter<MainScreenState> emit) {
     mainScreenRepository.deleteDishFromDB(event.dish);
     print(state.dishes.length);
-    List<Dish> newDishList = List.from(state.dishes)
+    List<Dish> newDishList = List.of(state.dishes)
       ..removeWhere((element) => element.date == event.dish.date);
     print(state.dishes.length);
     emit(state.copyWith(newDishes: newDishList));

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:recent_dishes_app/main.dart';
-import 'package:recent_dishes_app/src/features/water_screen/bloc/water_bloc.dart';
+import 'package:recent_dishes_app/src/features/water_screen/presentation/bloc/water_bloc.dart';
 
 class AddWaterWidget extends StatefulWidget {
   const AddWaterWidget({super.key});
