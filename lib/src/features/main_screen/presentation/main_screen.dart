@@ -4,6 +4,7 @@ import 'package:auto_route/annotations.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:recent_dishes_app/src/features/main_screen/domain/ticker.dart';
 import 'package:recent_dishes_app/src/features/main_screen/presentation/widgets/add_new_dish.dart';
 import 'package:recent_dishes_app/src/common/widgets/card_widget.dart';
 import 'package:recent_dishes_app/src/features/main_screen/data/dishes_api.dart';
@@ -26,7 +27,7 @@ class MainScreen extends StatelessWidget implements AutoRouteWrapper {
           }
           return Column(
             children: [
-              TimerWidget(dateTime: DateTime.now()),
+              TimerWidget(dateTime: state.secondsFromRecentDish ?? DateTime(1970)),
               const AddNewDish(),
               const SizedBox(height: 15),
               Expanded(
@@ -71,7 +72,7 @@ class MainScreen extends StatelessWidget implements AutoRouteWrapper {
     return BlocProvider<MainScreenBloc>(
       child: this,
       create: (_) =>
-          MainScreenBloc(mainScreenRepository: DishesApiFirebase())
+          MainScreenBloc(mainScreenRepository: DishesApiFirebase(), ticker: Ticker())
             ..add(InitMainScreen()),
     );
   }

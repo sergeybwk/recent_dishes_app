@@ -17,3 +17,7 @@ class DeleteDishEvent extends MainScreenEvent {
   final Dish dish;
   const DeleteDishEvent({required this.dish});
 }
+
+class _TimerTicked extends MainScreenEvent {
+  const _TimerTicked();
+}

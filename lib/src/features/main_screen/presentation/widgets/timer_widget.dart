@@ -8,6 +8,9 @@ class TimerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(DateFormat.Hms().format(dateTime));
+    return Text(
+      DateFormat.Hms().format(dateTime.toUtc()),
+      style: const TextStyle(fontSize: 18),
+    );
   }
 }
