@@ -14,6 +14,8 @@ class _AddWaterWidgetState extends State<AddWaterWidget> {
 
   final List<int> _volumesList = [100, 200, 250];
 
+  final TextEditingController _textController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -26,7 +28,8 @@ class _AddWaterWidgetState extends State<AddWaterWidget> {
               width: 10,
             ),
             ToggleButtons(
-              borderRadius: const BorderRadius.all(Radius.circular(4)),
+              borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(8), bottomLeft: Radius.circular(8)),
               isSelected: _selectedWaterVolume,
               onPressed: (int index) {
                 setState(() {
@@ -41,6 +44,18 @@ class _AddWaterWidgetState extends State<AddWaterWidget> {
                 Text(_volumesList[2].toString())
               ],
             ),
+            SizedBox(
+              width: 50,
+              child: TextField(
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(8),
+                            bottomRight: Radius.circular(8)))),
+                controller: _textController,
+                keyboardType: TextInputType.number,
+              ),
+            ),
           ],
         ),
         const SizedBox(
@@ -50,9 +65,15 @@ class _AddWaterWidgetState extends State<AddWaterWidget> {
             onPressed: () {
               int index =
                   _selectedWaterVolume.indexWhere((element) => element == true);
-              context
-                  .read<WaterBloc>()
-                  .add(AddWaterEvent(volume: _volumesList[index]));
+              if (_textController.text.isNotEmpty) {
+                context.read<WaterBloc>().add(
+                    AddWaterEvent(volume: int.parse(_textController.text)));
+                _textController.clear();
+              } else if (index != -1) {
+                context
+                    .read<WaterBloc>()
+                    .add(AddWaterEvent(volume: _volumesList[index]));
+              }
             },
             child: const Text("Добавить"))
       ],

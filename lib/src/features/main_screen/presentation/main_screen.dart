@@ -27,10 +27,20 @@ class MainScreen extends StatelessWidget implements AutoRouteWrapper {
           }
           return Column(
             children: [
-              TimerWidget(dateTime: state.secondsFromRecentDish ?? DateTime(1970)),
-              const AddNewDish(),
-              const SizedBox(height: 15),
-              Expanded(
+              Flexible(
+                  flex: 1,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TimerWidget(
+                          dateTime:
+                              state.secondsFromRecentDish ?? DateTime(1970)),
+                      const AddNewDish(),
+                      const SizedBox(height: 15),
+                    ],
+                  )),
+              Flexible(
+                flex: 2,
                 child: ScrollConfiguration(
                   behavior: ScrollConfiguration.of(context).copyWith(
                       dragDevices: {
@@ -40,7 +50,7 @@ class MainScreen extends StatelessWidget implements AutoRouteWrapper {
                   // TODO Add group by day
                   child: ListView.builder(
                       physics: const AlwaysScrollableScrollPhysics(),
-                      shrinkWrap: true,
+                      // shrinkWrap: true,
                       itemCount: state.dishes.length,
                       itemBuilder: (_, int index) {
                         final subtitleText =
@@ -71,9 +81,9 @@ class MainScreen extends StatelessWidget implements AutoRouteWrapper {
   Widget wrappedRoute(BuildContext context) {
     return BlocProvider<MainScreenBloc>(
       child: this,
-      create: (_) =>
-          MainScreenBloc(mainScreenRepository: DishesApiFirebase(), ticker: Ticker())
-            ..add(InitMainScreen()),
+      create: (_) => MainScreenBloc(
+          mainScreenRepository: DishesApiFirebase(), ticker: Ticker())
+        ..add(InitMainScreen()),
     );
   }
 }
