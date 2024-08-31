@@ -21,8 +21,11 @@ class WaterScreen extends StatelessWidget implements AutoRouteWrapper {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          AddWaterWidget(),
-          Expanded(
+          Flexible(
+              flex: 1,
+              child: AddWaterWidget()),
+          Flexible(
+            flex: 3,
             child: ScrollConfiguration(
               behavior: ScrollConfiguration.of(context).copyWith(dragDevices: {
                 PointerDeviceKind.mouse,
@@ -35,7 +38,6 @@ class WaterScreen extends StatelessWidget implements AutoRouteWrapper {
                 }
                 return ListView.builder(
                     physics: const AlwaysScrollableScrollPhysics(),
-                    shrinkWrap: true,
                     itemCount: state.waterIntakes.length,
                     itemBuilder: (context, index) {
                       return CardWidget(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recent_dishes_app/src/features/water_screen/presentation/bloc/water_bloc.dart';
+import 'package:flutter/services.dart';
 
 class AddWaterWidget extends StatefulWidget {
   const AddWaterWidget({super.key});
@@ -19,6 +20,7 @@ class _AddWaterWidgetState extends State<AddWaterWidget> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -47,14 +49,26 @@ class _AddWaterWidgetState extends State<AddWaterWidget> {
             SizedBox(
               width: 50,
               child: TextField(
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(
+                  inputFormatters: [
+                    FilteringTextInputFormatter(RegExp(r"\d"), allow: true)
+                  ],
+                  decoration: InputDecoration(
+                    // focusColor: ToggleButtonsTheme.of(context).hoverColor,
+                    // fillColor: ToggleButtonsTheme.of(context).hoverColor,
+                    // hoverColor: ToggleButtonsTheme.of(context).hoverColor,
+                      contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                      border: OutlineInputBorder(
                         borderRadius: BorderRadius.only(
                             topRight: Radius.circular(8),
-                            bottomRight: Radius.circular(8)))),
-                controller: _textController,
-                keyboardType: TextInputType.number,
-              ),
+                            bottomRight: Radius.circular(8)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(8),
+                            bottomRight: Radius.circular(8)),
+                      )),
+                  controller: _textController,
+                  keyboardType: TextInputType.number),
             ),
           ],
         ),
