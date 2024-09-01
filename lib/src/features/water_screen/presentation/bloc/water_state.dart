@@ -29,5 +29,5 @@ class WaterState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [status, waterIntakes];
+  List<Object?> get props => [status, waterIntakes, dailyWaterConsumption];
 }

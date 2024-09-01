@@ -72,9 +72,7 @@ class _AddWaterWidgetState extends State<AddWaterWidget> {
             ),
           ],
         ),
-        const SizedBox(
-          height: 15,
-        ),
+        const SizedBox(height: 15,),
         ElevatedButton(
             onPressed: () {
               int index =

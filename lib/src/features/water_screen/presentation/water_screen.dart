@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recent_dishes_app/src/common/widgets/card_widget.dart';
 import 'package:recent_dishes_app/src/common/widgets/custom_error_widget.dart';
-import 'package:recent_dishes_app/src/features/water_screen/presentation/add_water_widget.dart';
+import 'package:recent_dishes_app/src/features/water_screen/presentation/widgets/add_water_widget.dart';
 import 'package:recent_dishes_app/src/features/water_screen/data/water_api.dart';
+import 'package:recent_dishes_app/src/features/water_screen/presentation/widgets/water_cup_widget.dart';
 
 import '../presentation/bloc/water_bloc.dart';
 
@@ -26,11 +27,10 @@ class WaterScreen extends StatelessWidget implements AutoRouteWrapper {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Flexible(
-                    flex: 1,
-                    child: Text(
-                        "${state.dailyWaterConsumption / 2000 * 100}% (${state.dailyWaterConsumption} ml) of daily normal (2000 ml) ")),
+                  flex: 3,
+                    child: WaterCupWidget(waterConsumed: state.dailyWaterConsumption)),
                 Flexible(
-                    flex: 1,
+                    flex: 2,
                     child: Column(
                       children: [
                         AddWaterWidget(),
