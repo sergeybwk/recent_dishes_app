@@ -17,53 +17,59 @@ class WaterScreen extends StatelessWidget implements AutoRouteWrapper {
   @override
   Widget build(BuildContext context) {
     return BlocListener<WaterBloc, WaterState>(
-      listener: _blocListener,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Flexible(
-              flex: 1,
-              child: AddWaterWidget()),
-          Flexible(
-            flex: 3,
-            child: ScrollConfiguration(
-              behavior: ScrollConfiguration.of(context).copyWith(dragDevices: {
-                PointerDeviceKind.mouse,
-                PointerDeviceKind.touch
-              }),
-              child:
-                  BlocBuilder<WaterBloc, WaterState>(builder: (context, state) {
-                if (state.status == WaterStatus.loading) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                return ListView.builder(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    itemCount: state.waterIntakes.length,
-                    itemBuilder: (context, index) {
-                      return CardWidget(
-                          date: state.waterIntakes[index].date,
-                          subtitleText:
-                              "${state.waterIntakes[index].volume} ml",
-                          onDelete: () {
-                            context.read<WaterBloc>().add(DeleteWaterEvent(
-                                date: state.waterIntakes[index].date));
-                          });
-                    });
-              }),
-            ),
-          )
-        ],
-      ),
-    );
+        listener: _blocListener,
+        child: BlocBuilder<WaterBloc, WaterState>(builder: (context, state) {
+          if (state.status == WaterStatus.loading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          return Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Flexible(
+                    flex: 1,
+                    child: Text(
+                        "${state.dailyWaterConsumption / 2000 * 100}% (${state.dailyWaterConsumption} ml) of daily normal (2000 ml) ")),
+                Flexible(
+                    flex: 1,
+                    child: Column(
+                      children: [
+                        AddWaterWidget(),
+                      ],
+                    )),
+                Flexible(
+                  flex: 5,
+                  child: ScrollConfiguration(
+                      behavior: ScrollConfiguration.of(context).copyWith(
+                          dragDevices: {
+                            PointerDeviceKind.mouse,
+                            PointerDeviceKind.touch
+                          }),
+                      child: ListView.builder(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          itemCount: state.waterIntakes.length,
+                          itemBuilder: (context, index) {
+                            return CardWidget(
+                                date: state.waterIntakes[index].date,
+                                subtitleText:
+                                    "${state.waterIntakes[index].volume} ml",
+                                onDelete: () {
+                                  context.read<WaterBloc>().add(
+                                      DeleteWaterEvent(
+                                          date:
+                                              state.waterIntakes[index].date));
+                                });
+                          })),
+                )
+              ]);
+        }));
   }
 
   @override
   Widget wrappedRoute(BuildContext context) {
     return BlocProvider<WaterBloc>(
       child: this,
-      create: (_) =>
-          WaterBloc(waterScreenRepository: WaterApiFirebase())
-            ..add(const InitWaterScreen()),
+      create: (_) => WaterBloc(waterScreenRepository: WaterApiFirebase())
+        ..add(const InitWaterScreen()),
     );
   }
 

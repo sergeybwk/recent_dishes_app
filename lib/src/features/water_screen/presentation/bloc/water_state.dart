@@ -9,16 +9,23 @@ enum WaterStatus {
 }
 
 class WaterState extends Equatable {
-  const WaterState({required this.waterIntakes, required this.status});
+  const WaterState(
+      {required this.waterIntakes,
+      required this.status,
+      required this.dailyWaterConsumption});
 
   final List<WaterIntake> waterIntakes;
   final WaterStatus status;
+  final int dailyWaterConsumption;
 
   WaterState copyWith(
-      {WaterStatus? newStatus, List<WaterIntake>? newWaterIntakes}) {
+      {WaterStatus? newStatus,
+      List<WaterIntake>? newWaterIntakes,
+      int? newDailyWaterConsumption}) {
     return WaterState(
         waterIntakes: newWaterIntakes ?? waterIntakes,
-        status: newStatus ?? status);
+        status: newStatus ?? status,
+        dailyWaterConsumption: newDailyWaterConsumption ?? dailyWaterConsumption);
   }
 
   @override
