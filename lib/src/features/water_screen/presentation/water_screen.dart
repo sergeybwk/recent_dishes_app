@@ -74,13 +74,29 @@ class WaterScreen extends StatelessWidget implements AutoRouteWrapper {
   }
 
   void _blocListener(BuildContext context, WaterState state) {
-    if (state.status == WaterStatus.loadingFailed) {
-      showDialog(
-          context: context,
-          builder: (context) {
-            return const CustomErrorWidget(
-                errorText: "Failed to load the water intakes");
-          });
+    switch (state.status) {
+      case WaterStatus.loadingFailed:
+        showDialog(
+            context: context,
+            builder: (context) {
+              return const CustomErrorWidget(
+                  errorText: "Failed to load the water intakes");
+            });
+      case WaterStatus.addingFailed:
+        showDialog(
+            context: context,
+            builder: (context) {
+              return const CustomErrorWidget(
+                  errorText: "Failed to add new water intake the water intakes");
+            });
+      case WaterStatus.deleteFailed:
+        showDialog(
+            context: context,
+            builder: (context) {
+              return const CustomErrorWidget(
+                  errorText: "Failed to delete water intake the water intakes");
+            });
+      case _:
     }
   }
 }

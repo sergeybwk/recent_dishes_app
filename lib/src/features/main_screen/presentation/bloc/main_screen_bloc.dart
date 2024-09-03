@@ -27,12 +27,9 @@ class MainScreenBloc extends Bloc<MainScreenEvent, MainScreenState> {
 
   Future<void> _loadDishesFromDB(
       InitMainScreen event, Emitter<MainScreenState> emit) async {
-    print("load dishes bloc init");
     List<Dish> dishes = await mainScreenRepository.loadDishesFromDB();
-    print('before time calc');
     int timeDifference = TimeCalculations.getTimeDifferenceInSeconds(
         DateTime.now(), dishes.first.date);
-    print('after time calc');
     // TODO Add checker if recent dish was more than 24 hours ago
     emit(state.copyWith(
         newDishes: dishes,
@@ -50,23 +47,31 @@ class MainScreenBloc extends Bloc<MainScreenEvent, MainScreenState> {
             state.secondsFromRecentDish!.add(Duration(seconds: 1))));
   }
 
-  void _addNewDish(AddNewDishEvent event, Emitter<MainScreenState> emit) {
+  void _addNewDish(AddNewDishEvent event, Emitter<MainScreenState> emit) async {
     DateTime _currentDateTime = DateTime.timestamp();
     Dish newDish = Dish(date: _currentDateTime, dishType: event.dishType);
     List<Dish> newDishList = [newDish, ...state.dishes];
     print(newDishList.last.dishType);
-    mainScreenRepository.saveDishToDB(newDish);
-    emit(state.copyWith(
-        newDishes: newDishList, newStatus: MainScreenStatus.loadingSuccess));
-    print(state.dishes);
+    try {
+      await mainScreenRepository.saveDishToDB(newDish);
+      emit(state.copyWith(
+          newDishes: newDishList, newStatus: MainScreenStatus.loadingSuccess));
+    }
+    catch (e) {
+     emit(state.copyWith(newStatus: MainScreenStatus.addingFailed));
+    }
   }
 
   void _deleteDish(DeleteDishEvent event, Emitter<MainScreenState> emit) {
-    mainScreenRepository.deleteDishFromDB(event.dish);
-    print(state.dishes.length);
-    List<Dish> newDishList = List.of(state.dishes)
-      ..removeWhere((element) => element.date == event.dish.date);
-    print(state.dishes.length);
-    emit(state.copyWith(newDishes: newDishList));
+    try {
+      mainScreenRepository.deleteDishFromDB(event.dish);
+      List<Dish> newDishList = List.of(state.dishes)
+        ..removeWhere((element) => element.date == event.dish.date);
+      emit(state.copyWith(newDishes: newDishList));
+    }
+    catch (e) {
+      print('deleting failed');
+      emit(state.copyWith(newStatus: MainScreenStatus.deleteFailed));
+    }
   }
 }

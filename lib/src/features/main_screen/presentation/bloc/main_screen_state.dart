@@ -1,6 +1,12 @@
 part of 'main_screen_bloc.dart';
 
-enum MainScreenStatus { loading, loadingSuccess }
+enum MainScreenStatus {
+  loading,
+  loadingSuccess,
+  loadingFailed,
+  addingFailed,
+  deleteFailed
+}
 
 class MainScreenState extends Equatable {
   const MainScreenState(
@@ -11,7 +17,6 @@ class MainScreenState extends Equatable {
   final DateTime? secondsFromRecentDish;
 
   @override
-  // TODO: implement props
   List<Object?> get props => [dishes, status, secondsFromRecentDish];
 
   MainScreenState copyWith(
@@ -21,6 +26,7 @@ class MainScreenState extends Equatable {
     return MainScreenState(
         dishes: newDishes ?? dishes,
         status: newStatus ?? status,
-        secondsFromRecentDish: newSecondsFromRecentDish ?? secondsFromRecentDish);
+        secondsFromRecentDish:
+            newSecondsFromRecentDish ?? secondsFromRecentDish);
   }
 }

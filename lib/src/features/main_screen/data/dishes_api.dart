@@ -41,7 +41,6 @@ class DishesApiFirebase implements DishesApi {
             date: DateTime.fromMillisecondsSinceEpoch(
                 dateTime.millisecondsSinceEpoch),
             dishType: type));
-        print("loaded from db");
       }
     } catch (e) {
       print(e);
