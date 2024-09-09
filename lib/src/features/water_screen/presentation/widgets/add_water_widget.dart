@@ -53,16 +53,15 @@ class _AddWaterWidgetState extends State<AddWaterWidget> {
                     FilteringTextInputFormatter(RegExp(r"\d"), allow: true)
                   ],
                   decoration: InputDecoration(
-                    // focusColor: ToggleButtonsTheme.of(context).hoverColor,
-                    // fillColor: ToggleButtonsTheme.of(context).hoverColor,
-                    // hoverColor: ToggleButtonsTheme.of(context).hoverColor,
                       contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                      border: OutlineInputBorder(
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black45),
                         borderRadius: BorderRadius.only(
                             topRight: Radius.circular(8),
                             bottomRight: Radius.circular(8)),
                       ),
                       focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black26),
                         borderRadius: BorderRadius.only(
                             topRight: Radius.circular(8),
                             bottomRight: Radius.circular(8)),
@@ -87,7 +86,7 @@ class _AddWaterWidgetState extends State<AddWaterWidget> {
                     .add(AddWaterEvent(volume: _volumesList[index]));
               }
             },
-            child: const Text("Добавить"))
+            child: const Text("Add new water intake"))
       ],
     );
   }

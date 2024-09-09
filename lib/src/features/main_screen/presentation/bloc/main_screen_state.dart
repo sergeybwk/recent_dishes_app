@@ -12,7 +12,7 @@ class MainScreenState extends Equatable {
   const MainScreenState(
       {required this.dishes, required this.status, this.secondsFromRecentDish});
 
-  final List<Dish> dishes;
+  final Map<String, List<Dish>> dishes;
   final MainScreenStatus status;
   final DateTime? secondsFromRecentDish;
 
@@ -20,7 +20,7 @@ class MainScreenState extends Equatable {
   List<Object?> get props => [dishes, status, secondsFromRecentDish];
 
   MainScreenState copyWith(
-      {List<Dish>? newDishes,
+      {Map<String, List<Dish>>? newDishes,
       MainScreenStatus? newStatus,
       DateTime? newSecondsFromRecentDish}) {
     return MainScreenState(

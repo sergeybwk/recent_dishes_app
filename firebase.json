@@ -1,1 +1,36 @@
-{"flutter":{"platforms":{"dart":{"lib/firebase_options.dart":{"projectId":"recent-dishes-app","configurations":{"macos":"1:545378708614:ios:80562c41f86ac6be26f507","web":"1:545378708614:web:055b0556a40a6ee326f507","windows":"1:545378708614:web:7ab73310c86fe9bf26f507"}}},"macos":{"default":{"projectId":"recent-dishes-app","appId":"1:545378708614:ios:80562c41f86ac6be26f507","uploadDebugSymbols":false,"fileOutput":"macos/Runner/GoogleService-Info.plist"}}}}}
+{
+  "flutter": {
+    "platforms": {
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "recent-dishes-app",
+          "configurations": {
+            "macos": "1:545378708614:ios:80562c41f86ac6be26f507",
+            "web": "1:545378708614:web:055b0556a40a6ee326f507",
+            "windows": "1:545378708614:web:7ab73310c86fe9bf26f507"
+          }
+        }
+      },
+      "macos": {
+        "default": {
+          "projectId": "recent-dishes-app",
+          "appId": "1:545378708614:ios:80562c41f86ac6be26f507",
+          "uploadDebugSymbols": false,
+          "fileOutput": "macos/Runner/GoogleService-Info.plist"
+        }
+      }
+    }
+  },
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "hosting": {
+    "public": "build/web",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}

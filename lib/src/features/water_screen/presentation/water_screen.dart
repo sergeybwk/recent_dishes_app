@@ -48,16 +48,24 @@ class WaterScreen extends StatelessWidget implements AutoRouteWrapper {
                           physics: const AlwaysScrollableScrollPhysics(),
                           itemCount: state.waterIntakes.length,
                           itemBuilder: (context, index) {
-                            return CardWidget(
-                                date: state.waterIntakes[index].date,
-                                subtitleText:
-                                    "${state.waterIntakes[index].volume} ml",
-                                onDelete: () {
-                                  context.read<WaterBloc>().add(
-                                      DeleteWaterEvent(
-                                          date:
-                                              state.waterIntakes[index].date));
-                                });
+                            String key = state.waterIntakes.keys.elementAt(index);
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 50),
+                                    child: Text(key.toString())),
+                                for (var i in state.waterIntakes[key]!)
+                                  CardWidget(
+                                      subtitleText: "${i.volume} ml",
+                                      onDelete: () {
+                                        context
+                                            .read<WaterBloc>()
+                                            .add(DeleteWaterEvent(date: i.date));
+                                      },
+                                      date: i.date)
+                              ],
+                            );
                           })),
                 )
               ]);

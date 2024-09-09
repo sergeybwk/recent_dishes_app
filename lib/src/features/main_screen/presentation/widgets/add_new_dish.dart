@@ -39,7 +39,7 @@ class _AddNewDishState extends State<AddNewDish> {
                       ? DishType.full
                       : DishType.aLittle));
             },
-            child: Text("add"))
+            child: Text("Add new dish"))
       ],
     );
   }

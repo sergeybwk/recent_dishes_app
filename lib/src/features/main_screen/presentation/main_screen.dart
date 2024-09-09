@@ -37,7 +37,7 @@ class MainScreen extends StatelessWidget implements AutoRouteWrapper {
                       children: [
                         TimerWidget(
                             dateTime:
-                            state.secondsFromRecentDish ?? DateTime(1970)),
+                                state.secondsFromRecentDish ?? DateTime(1970)),
                         const AddNewDish(),
                         const SizedBox(height: 15),
                       ],
@@ -50,26 +50,34 @@ class MainScreen extends StatelessWidget implements AutoRouteWrapper {
                           PointerDeviceKind.mouse,
                           PointerDeviceKind.touch
                         }),
-                    // TODO Add group by day
                     child: ListView.builder(
+                      itemCount: state.dishes.keys.length,
+                      shrinkWrap: true,
                       physics: const AlwaysScrollableScrollPhysics(),
-                      itemCount: state.dishes.length,
-                      itemBuilder: (_, int index) {
-                        final subtitleText =
-                        switch (state.dishes[index].dishType) {
-                          DishType.full => "Complete dish",
-                          null => "",
-                          DishType.aLittle => "Little snack",
-                        };
-                        return CardWidget(
-                          onDelete: () {
-                            context.read<MainScreenBloc>().add(
-                                DeleteDishEvent(dish: state.dishes[index]));
-                          },
-                          date: state.dishes[index].date,
-                          subtitleText: subtitleText,
+                      itemBuilder: (context, index) {
+                        String key = state.dishes.keys.elementAt(index);
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 50),
+                                child: Text(key.toString())),
+                            for (var i in state.dishes[key]!)
+                              CardWidget(
+                                  subtitleText: (i.dishType == DishType.full
+                                          ? "Full meal"
+                                          : "Snack")
+                                      .toString(),
+                                  onDelete: () {
+                                    context
+                                        .read<MainScreenBloc>()
+                                        .add(DeleteDishEvent(dish: i));
+                                  },
+                                  date: i.date)
+                          ],
                         );
-                      },),
+                      },
+                    ),
                   ),
                 )
               ],
@@ -84,8 +92,7 @@ class MainScreen extends StatelessWidget implements AutoRouteWrapper {
   Widget wrappedRoute(BuildContext context) {
     return BlocProvider<MainScreenBloc>(
       child: this,
-      create: (_) =>
-      MainScreenBloc(
+      create: (_) => MainScreenBloc(
           mainScreenRepository: DishesApiFirebase(), ticker: Ticker())
         ..add(InitMainScreen()),
     );
@@ -94,18 +101,26 @@ class MainScreen extends StatelessWidget implements AutoRouteWrapper {
   void _listener(BuildContext context, MainScreenState state) {
     switch (state.status) {
       case MainScreenStatus.loadingFailed:
-        showDialog(context: context, builder: (context) {
-          return const CustomErrorWidget(
-              errorText: "Failed to load recent dishes");
-        });
+        showDialog(
+            context: context,
+            builder: (context) {
+              return const CustomErrorWidget(
+                  errorText: "Failed to load recent dishes");
+            });
       case MainScreenStatus.addingFailed:
-      showDialog(context: context, builder: (context) {
-        return const CustomErrorWidget(errorText: "Failed to add new dish");
-      });
+        showDialog(
+            context: context,
+            builder: (context) {
+              return const CustomErrorWidget(
+                  errorText: "Failed to add new dish");
+            });
       case MainScreenStatus.deleteFailed:
-        showDialog(context: context, builder: (context) {
-          return const CustomErrorWidget(errorText: "Failed to delete dish");
-        });
+        showDialog(
+            context: context,
+            builder: (context) {
+              return const CustomErrorWidget(
+                  errorText: "Failed to delete dish");
+            });
       case _:
     }
   }

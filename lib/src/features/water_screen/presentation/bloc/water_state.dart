@@ -14,13 +14,13 @@ class WaterState extends Equatable {
       required this.status,
       required this.dailyWaterConsumption});
 
-  final List<WaterIntake> waterIntakes;
+  final Map<String, List<WaterIntake>> waterIntakes;
   final WaterStatus status;
   final int dailyWaterConsumption;
 
   WaterState copyWith(
       {WaterStatus? newStatus,
-      List<WaterIntake>? newWaterIntakes,
+        Map<String, List<WaterIntake>>? newWaterIntakes,
       int? newDailyWaterConsumption}) {
     return WaterState(
         waterIntakes: newWaterIntakes ?? waterIntakes,

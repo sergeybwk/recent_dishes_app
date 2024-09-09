@@ -2,6 +2,7 @@
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:recent_dishes_app/src/common/lists_grouping.dart';
 import 'package:recent_dishes_app/src/features/water_screen/domain/water_consumption_calculation.dart';
 import 'package:recent_dishes_app/src/features/water_screen/domain/water_models.dart';
 import 'package:recent_dishes_app/src/features/water_screen/data/water_api.dart';
@@ -13,7 +14,7 @@ part 'water_state.dart';
 class WaterBloc extends Bloc<WaterEvent, WaterState> {
   WaterBloc({required this.waterScreenRepository})
       : super(WaterState(
-            waterIntakes: [],
+            waterIntakes: {},
             status: WaterStatus.loading,
             dailyWaterConsumption: 0)) {
     on<AddWaterEvent>(_addNewWaterIntake);
@@ -28,13 +29,16 @@ class WaterBloc extends Bloc<WaterEvent, WaterState> {
     emit(state.copyWith(newStatus: WaterStatus.loading));
     List<WaterIntake>? waterIntakes =
         await waterScreenRepository.loadWaterIntakesFromDB();
+    // TODO Add null check
+    Map<String, List<WaterIntake>> newWaterIntakes =
+        groupListByDate(waterIntakes!);
     if (waterIntakes != null) {
       emit(state.copyWith(
           newStatus: WaterStatus.loadingSuccess,
-          newWaterIntakes: waterIntakes,
+          newWaterIntakes: newWaterIntakes,
           newDailyWaterConsumption:
-              WaterConsumptionCalculation.getDailyWaterConsumption(
-                  waterIntakes)));
+              getDailyWaterConsumption(
+                  newWaterIntakes)));
     } else {
       emit(state.copyWith(newStatus: WaterStatus.loadingFailed));
     }
@@ -46,15 +50,19 @@ class WaterBloc extends Bloc<WaterEvent, WaterState> {
     DateTime dateTime = DateTime.timestamp();
     WaterIntake newWaterIntake =
         WaterIntake(volume: event.volume, date: dateTime);
-    List<WaterIntake> newWaterIntakesList = [
-      newWaterIntake, ...state.waterIntakes
-    ];
+    List<WaterIntake> newWaterIntakeList = [];
+    state.waterIntakes.forEach((_, waterIntake) {
+      newWaterIntakeList.addAll(waterIntake);
+    });
+    newWaterIntakeList.add(newWaterIntake);
+    Map<String, List<WaterIntake>> newWaterIntakeMap =
+        groupListByDate(newWaterIntakeList);
     int newDailyWaterConsumption = state.dailyWaterConsumption + event.volume;
     try {
       waterScreenRepository.addWaterIntakeToDB(event.volume, dateTime);
       emit(state.copyWith(
           newStatus: state.status,
-          newWaterIntakes: newWaterIntakesList,
+          newWaterIntakes: newWaterIntakeMap,
           newDailyWaterConsumption: newDailyWaterConsumption));
     } catch (e) {
       print("adding new water intake failed, problem: $e");
@@ -64,15 +72,17 @@ class WaterBloc extends Bloc<WaterEvent, WaterState> {
 
   Future<void> _deleteWaterIntake(
       DeleteWaterEvent event, Emitter<WaterState> emit) async {
-    List<WaterIntake> newWaterIntakesList = List.from(state.waterIntakes)
-      ..removeWhere((element) => element.date == event.date);
+    Map<String, List<WaterIntake>> newWaterIntakesMap = Map.of(state.waterIntakes);
+    List<WaterIntake>? dateListWaterIntake =
+    newWaterIntakesMap[event.date.toString().substring(0, 10)];
+    dateListWaterIntake?.removeWhere((element) => element.date == event.date);
     try {
       waterScreenRepository.deleteWaterIntakeFromDB(event.date);
       emit(state.copyWith(
-          newWaterIntakes: newWaterIntakesList,
+          newWaterIntakes: newWaterIntakesMap,
           newDailyWaterConsumption:
-              WaterConsumptionCalculation.getDailyWaterConsumption(
-                  newWaterIntakesList)));
+              getDailyWaterConsumption(
+                  newWaterIntakesMap)));
     } catch (e) {
       print("failed to delete the waterIntake from db, reason: $e");
       emit(state.copyWith(newStatus: WaterStatus.deleteFailed));

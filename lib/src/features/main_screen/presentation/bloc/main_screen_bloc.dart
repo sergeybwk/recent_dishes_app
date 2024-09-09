@@ -6,6 +6,7 @@ import 'package:recent_dishes_app/src/features/main_screen/data/dishes_api.dart'
 import 'package:recent_dishes_app/src/features/main_screen/domain/time_calculations.dart';
 import '../../domain/main_screen_models.dart';
 import '../../domain/ticker.dart';
+import '../../../../common/lists_grouping.dart';
 
 part 'main_screen_events.dart';
 
@@ -14,7 +15,7 @@ part 'main_screen_state.dart';
 class MainScreenBloc extends Bloc<MainScreenEvent, MainScreenState> {
   MainScreenBloc({required this.mainScreenRepository, required Ticker ticker})
       : _ticker = ticker,
-        super(MainScreenState(dishes: [], status: MainScreenStatus.loading)) {
+        super(MainScreenState(dishes: {}, status: MainScreenStatus.loading)) {
     on<AddNewDishEvent>(_addNewDish);
     on<InitMainScreen>(_loadDishesFromDB);
     on<DeleteDishEvent>(_deleteDish);
@@ -27,12 +28,15 @@ class MainScreenBloc extends Bloc<MainScreenEvent, MainScreenState> {
 
   Future<void> _loadDishesFromDB(
       InitMainScreen event, Emitter<MainScreenState> emit) async {
-    List<Dish> dishes = await mainScreenRepository.loadDishesFromDB();
+    List<Dish> dishesList = await mainScreenRepository.loadDishesFromDB();
+    Map<String, List<Dish>> newDishes =
+        groupListByDate(dishesList) as Map<String, List<Dish>>;
     int timeDifference = TimeCalculations.getTimeDifferenceInSeconds(
-        DateTime.now(), dishes.first.date);
+        DateTime.now(), dishesList.first.date);
+    print(newDishes);
     // TODO Add checker if recent dish was more than 24 hours ago
     emit(state.copyWith(
-        newDishes: dishes,
+        newDishes: newDishes,
         newStatus: MainScreenStatus.loadingSuccess,
         newSecondsFromRecentDish:
             DateTime.fromMillisecondsSinceEpoch(timeDifference)));
@@ -50,26 +54,31 @@ class MainScreenBloc extends Bloc<MainScreenEvent, MainScreenState> {
   void _addNewDish(AddNewDishEvent event, Emitter<MainScreenState> emit) async {
     DateTime _currentDateTime = DateTime.timestamp();
     Dish newDish = Dish(date: _currentDateTime, dishType: event.dishType);
-    List<Dish> newDishList = [newDish, ...state.dishes];
-    print(newDishList.last.dishType);
+    // Check if the state.dishes.last (today) == DateTime.now().day or just use groupListByDay with newDishList below
+    List<Dish> newDishList = [];
+    state.dishes.forEach((_, dishes) {
+      newDishList.addAll(dishes);
+    });
+    newDishList.add(newDish);
+    Map<String, List<Dish>> newDishMap = groupListByDate(newDishList);
     try {
       await mainScreenRepository.saveDishToDB(newDish);
       emit(state.copyWith(
-          newDishes: newDishList, newStatus: MainScreenStatus.loadingSuccess));
-    }
-    catch (e) {
-     emit(state.copyWith(newStatus: MainScreenStatus.addingFailed));
+          newDishes: newDishMap, newStatus: MainScreenStatus.loadingSuccess));
+    } catch (e) {
+      emit(state.copyWith(newStatus: MainScreenStatus.addingFailed));
     }
   }
 
   void _deleteDish(DeleteDishEvent event, Emitter<MainScreenState> emit) {
     try {
       mainScreenRepository.deleteDishFromDB(event.dish);
-      List<Dish> newDishList = List.of(state.dishes)
-        ..removeWhere((element) => element.date == event.dish.date);
-      emit(state.copyWith(newDishes: newDishList));
-    }
-    catch (e) {
+      Map<String, List<Dish>> newDishMap = Map.of(state.dishes);
+      List<Dish>? dateListDishes =
+          newDishMap[event.dish.date.toString().substring(0, 10)];
+      dateListDishes?.removeWhere((element) => element.date == event.dish.date);
+      emit(state.copyWith(newDishes: newDishMap));
+    } catch (e) {
       print('deleting failed');
       emit(state.copyWith(newStatus: MainScreenStatus.deleteFailed));
     }
