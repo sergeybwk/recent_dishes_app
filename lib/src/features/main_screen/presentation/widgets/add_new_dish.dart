@@ -18,8 +18,7 @@ class _AddNewDishState extends State<AddNewDish> {
     return Column(
       children: [
         ToggleButtons(
-          borderRadius: BorderRadius.all(Radius.circular(4)),
-          children: [Text("Full"), Text("Half")],
+          borderRadius: const BorderRadius.all(Radius.circular(4)),
           isSelected: _selectedDishType,
           onPressed: (int index) {
             setState(() {
@@ -28,6 +27,7 @@ class _AddNewDishState extends State<AddNewDish> {
               }
             });
           },
+          children: const [Text("Full "), Text("Snack")],
         ),
         const SizedBox(
           height: 15,
@@ -39,7 +39,8 @@ class _AddNewDishState extends State<AddNewDish> {
                       ? DishType.full
                       : DishType.aLittle));
             },
-            child: Text("Add new dish"))
+            child: const Text("Add new dish")),
+        const SizedBox(height: 15),
       ],
     );
   }

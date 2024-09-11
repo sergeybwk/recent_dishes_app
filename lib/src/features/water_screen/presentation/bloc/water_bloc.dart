@@ -13,7 +13,7 @@ part 'water_state.dart';
 
 class WaterBloc extends Bloc<WaterEvent, WaterState> {
   WaterBloc({required this.waterScreenRepository})
-      : super(WaterState(
+      : super(const WaterState(
             waterIntakes: {},
             status: WaterStatus.loading,
             dailyWaterConsumption: 0)) {
@@ -29,10 +29,9 @@ class WaterBloc extends Bloc<WaterEvent, WaterState> {
     emit(state.copyWith(newStatus: WaterStatus.loading));
     List<WaterIntake>? waterIntakes =
         await waterScreenRepository.loadWaterIntakesFromDB();
-    // TODO Add null check
-    Map<String, List<WaterIntake>> newWaterIntakes =
-        groupListByDate(waterIntakes!);
     if (waterIntakes != null) {
+      Map<String, List<WaterIntake>> newWaterIntakes =
+      groupListByDate(waterIntakes);
       emit(state.copyWith(
           newStatus: WaterStatus.loadingSuccess,
           newWaterIntakes: newWaterIntakes,

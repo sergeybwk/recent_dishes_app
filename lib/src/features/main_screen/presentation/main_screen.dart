@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:auto_route/annotations.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -31,19 +30,19 @@ class MainScreen extends StatelessWidget implements AutoRouteWrapper {
             return Column(
               children: [
                 Flexible(
-                    flex: 1,
+                    flex: 2,
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        const Spacer(),
                         TimerWidget(
                             dateTime:
                                 state.secondsFromRecentDish ?? DateTime(1970)),
+                        const Spacer(),
                         const AddNewDish(),
-                        const SizedBox(height: 15),
                       ],
                     )),
                 Flexible(
-                  flex: 2,
+                  flex: 4,
                   child: ScrollConfiguration(
                     behavior: ScrollConfiguration.of(context).copyWith(
                         dragDevices: {
@@ -94,7 +93,7 @@ class MainScreen extends StatelessWidget implements AutoRouteWrapper {
       child: this,
       create: (_) => MainScreenBloc(
           mainScreenRepository: DishesApiFirebase(), ticker: Ticker())
-        ..add(InitMainScreen()),
+        ..add(const InitMainScreen()),
     );
   }
 

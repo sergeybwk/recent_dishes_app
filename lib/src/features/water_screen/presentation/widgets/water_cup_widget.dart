@@ -24,7 +24,7 @@ class WaterCupWidget extends StatelessWidget {
               height: (waterConsumed / 2000) * 150,
               child: const DecoratedBox(
                   decoration: BoxDecoration(
-                borderRadius: const BorderRadius.only(
+                borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(20),
                     bottomRight: Radius.circular(20)),
                 color: Colors.lightBlue,

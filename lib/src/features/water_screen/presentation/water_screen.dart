@@ -27,17 +27,13 @@ class WaterScreen extends StatelessWidget implements AutoRouteWrapper {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Flexible(
-                  flex: 3,
+                  flex: 2,
                     child: WaterCupWidget(waterConsumed: state.dailyWaterConsumption)),
+                const Flexible(
+                    flex: 1,
+                    child: AddWaterWidget()),
                 Flexible(
-                    flex: 2,
-                    child: Column(
-                      children: [
-                        AddWaterWidget(),
-                      ],
-                    )),
-                Flexible(
-                  flex: 5,
+                  flex: 4,
                   child: ScrollConfiguration(
                       behavior: ScrollConfiguration.of(context).copyWith(
                           dragDevices: {

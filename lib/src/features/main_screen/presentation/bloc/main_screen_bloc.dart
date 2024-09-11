@@ -15,22 +15,22 @@ part 'main_screen_state.dart';
 class MainScreenBloc extends Bloc<MainScreenEvent, MainScreenState> {
   MainScreenBloc({required this.mainScreenRepository, required Ticker ticker})
       : _ticker = ticker,
-        super(MainScreenState(dishes: {}, status: MainScreenStatus.loading)) {
+        super(const MainScreenState(dishes: {}, status: MainScreenStatus.loading)) {
     on<AddNewDishEvent>(_addNewDish);
     on<InitMainScreen>(_loadDishesFromDB);
     on<DeleteDishEvent>(_deleteDish);
     on<_TimerTicked>(_onTicked);
   }
 
-  Ticker _ticker;
-  DishesApi mainScreenRepository;
+  final Ticker _ticker;
+  final DishesApi mainScreenRepository;
   StreamSubscription<int>? _tickerSubscription;
 
   Future<void> _loadDishesFromDB(
       InitMainScreen event, Emitter<MainScreenState> emit) async {
     List<Dish> dishesList = await mainScreenRepository.loadDishesFromDB();
     Map<String, List<Dish>> newDishes =
-        groupListByDate(dishesList) as Map<String, List<Dish>>;
+        groupListByDate(dishesList);
     int timeDifference = TimeCalculations.getTimeDifferenceInSeconds(
         DateTime.now(), dishesList.first.date);
     print(newDishes);
@@ -48,12 +48,12 @@ class MainScreenBloc extends Bloc<MainScreenEvent, MainScreenState> {
   void _onTicked(_TimerTicked event, Emitter<MainScreenState> emit) {
     emit(state.copyWith(
         newSecondsFromRecentDish:
-            state.secondsFromRecentDish!.add(Duration(seconds: 1))));
+            state.secondsFromRecentDish!.add(const Duration(seconds: 1))));
   }
 
   void _addNewDish(AddNewDishEvent event, Emitter<MainScreenState> emit) async {
-    DateTime _currentDateTime = DateTime.timestamp();
-    Dish newDish = Dish(date: _currentDateTime, dishType: event.dishType);
+    DateTime currentDateTime = DateTime.timestamp();
+    Dish newDish = Dish(date: currentDateTime, dishType: event.dishType);
     // Check if the state.dishes.last (today) == DateTime.now().day or just use groupListByDay with newDishList below
     List<Dish> newDishList = [];
     state.dishes.forEach((_, dishes) {

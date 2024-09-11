@@ -10,7 +10,7 @@ class TimerWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       DateFormat.Hms().format(dateTime.toUtc()),
-      style: const TextStyle(fontSize: 18),
+      style: const TextStyle(fontSize: 32),
     );
   }
 }

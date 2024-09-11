@@ -52,7 +52,7 @@ class _AddWaterWidgetState extends State<AddWaterWidget> {
                   inputFormatters: [
                     FilteringTextInputFormatter(RegExp(r"\d"), allow: true)
                   ],
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                       contentPadding: EdgeInsets.symmetric(horizontal: 10),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.black45),
@@ -86,7 +86,8 @@ class _AddWaterWidgetState extends State<AddWaterWidget> {
                     .add(AddWaterEvent(volume: _volumesList[index]));
               }
             },
-            child: const Text("Add new water intake"))
+            child: const Text("Add new water intake")),
+        const SizedBox(height: 15,)
       ],
     );
   }
