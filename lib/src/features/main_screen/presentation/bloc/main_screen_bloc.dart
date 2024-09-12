@@ -15,7 +15,7 @@ part 'main_screen_state.dart';
 class MainScreenBloc extends Bloc<MainScreenEvent, MainScreenState> {
   MainScreenBloc({required this.mainScreenRepository, required Ticker ticker})
       : _ticker = ticker,
-        super(const MainScreenState(dishes: {}, status: MainScreenStatus.loading)) {
+        super(MainScreenState(dishes: {}, status: MainScreenStatus.loading)) {
     on<AddNewDishEvent>(_addNewDish);
     on<InitMainScreen>(_loadDishesFromDB);
     on<DeleteDishEvent>(_deleteDish);
@@ -29,8 +29,7 @@ class MainScreenBloc extends Bloc<MainScreenEvent, MainScreenState> {
   Future<void> _loadDishesFromDB(
       InitMainScreen event, Emitter<MainScreenState> emit) async {
     List<Dish> dishesList = await mainScreenRepository.loadDishesFromDB();
-    Map<String, List<Dish>> newDishes =
-        groupListByDate(dishesList);
+    Map<String, List<Dish>> newDishes = groupListByDate(dishesList);
     int timeDifference = TimeCalculations.getTimeDifferenceInSeconds(
         DateTime.now(), dishesList.first.date);
     print(newDishes);
@@ -56,31 +55,37 @@ class MainScreenBloc extends Bloc<MainScreenEvent, MainScreenState> {
     Dish newDish = Dish(date: currentDateTime, dishType: event.dishType);
     // Check if the state.dishes.last (today) == DateTime.now().day or just use groupListByDay with newDishList below
     List<Dish> newDishList = [];
+    newDishList.add(newDish);
     state.dishes.forEach((_, dishes) {
       newDishList.addAll(dishes);
     });
-    newDishList.add(newDish);
     Map<String, List<Dish>> newDishMap = groupListByDate(newDishList);
+    // newDishMap.forEach((k, v) => v.forEach((e) => print(e.date)));
     try {
       await mainScreenRepository.saveDishToDB(newDish);
       emit(state.copyWith(
-          newDishes: newDishMap, newStatus: MainScreenStatus.loadingSuccess));
+          newDishes: newDishMap,
+          newStatus: MainScreenStatus.loadingSuccess,
+          newSecondsFromRecentDish: DateTime.fromMillisecondsSinceEpoch(
+              0)));
     } catch (e) {
       emit(state.copyWith(newStatus: MainScreenStatus.addingFailed));
     }
   }
 
   void _deleteDish(DeleteDishEvent event, Emitter<MainScreenState> emit) {
+    Map<String, List<Dish>> newDishMap = Map.of(state.dishes);
+    List<Dish>? dateListDishes =
+        newDishMap[event.dish.date.toString().substring(0, 10)];
+    dateListDishes?.removeWhere((element) => element.date == event.dish.date);
+    removeEmptyMapKeys<Dish>(newDishMap);
+    emit(state.copyWith(newDishes: newDishMap));
     try {
       mainScreenRepository.deleteDishFromDB(event.dish);
-      Map<String, List<Dish>> newDishMap = Map.of(state.dishes);
-      List<Dish>? dateListDishes =
-          newDishMap[event.dish.date.toString().substring(0, 10)];
-      dateListDishes?.removeWhere((element) => element.date == event.dish.date);
-      emit(state.copyWith(newDishes: newDishMap));
     } catch (e) {
       print('deleting failed');
       emit(state.copyWith(newStatus: MainScreenStatus.deleteFailed));
+      add(const InitMainScreen());
     }
   }
 }

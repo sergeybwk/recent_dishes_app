@@ -50,10 +50,10 @@ class WaterBloc extends Bloc<WaterEvent, WaterState> {
     WaterIntake newWaterIntake =
         WaterIntake(volume: event.volume, date: dateTime);
     List<WaterIntake> newWaterIntakeList = [];
+    newWaterIntakeList.add(newWaterIntake);
     state.waterIntakes.forEach((_, waterIntake) {
       newWaterIntakeList.addAll(waterIntake);
     });
-    newWaterIntakeList.add(newWaterIntake);
     Map<String, List<WaterIntake>> newWaterIntakeMap =
         groupListByDate(newWaterIntakeList);
     int newDailyWaterConsumption = state.dailyWaterConsumption + event.volume;
@@ -75,6 +75,7 @@ class WaterBloc extends Bloc<WaterEvent, WaterState> {
     List<WaterIntake>? dateListWaterIntake =
     newWaterIntakesMap[event.date.toString().substring(0, 10)];
     dateListWaterIntake?.removeWhere((element) => element.date == event.date);
+    removeEmptyMapKeys(newWaterIntakesMap);
     try {
       waterScreenRepository.deleteWaterIntakeFromDB(event.date);
       emit(state.copyWith(
